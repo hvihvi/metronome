@@ -1,14 +1,6 @@
 const initialState = {
-  bpm: 120,
-  playing: false
-};
-
-const UPDATE_BPM = "UPDATE_BPM";
-export const updateBpm = value => {
-  return {
-    type: UPDATE_BPM,
-    bpm: value
-  };
+  playing: false,
+  splits: []
 };
 
 const TOOGLE_PLAYING = "TOOGLE_PLAYING";
@@ -18,12 +10,20 @@ export const tooglePlaying = () => {
   };
 };
 
+const ADD_SPLIT = "ADD_SPLIT";
+export const addSplit = split => {
+  return {
+    type: ADD_SPLIT,
+    split: split
+  };
+};
+
 const metronome = (state = initialState, action) => {
   switch (action.type) {
-    case UPDATE_BPM:
-      return { ...state, bpm: action.bpm };
     case TOOGLE_PLAYING:
       return { ...state, playing: !state.playing };
+    case ADD_SPLIT:
+      return { ...state, splits: state.splits.concat(action.split) };
     default:
       return state;
   }

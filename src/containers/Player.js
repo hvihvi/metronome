@@ -31,23 +31,26 @@ class Player extends React.Component {
   };
 
   play = () => {
-    const { playing, bpm, tooglePlay } = this.props;
+    const { playing, splits, tooglePlay } = this.props;
+    if (splits.length === 0) {
+      return;
+    }
     if (playing) {
       // Stop the timer
       clearInterval(this.timer);
       tooglePlay();
-    } else {
-      // Start a timer with the current BPM
-      this.timer = setInterval(this.playClick, (60 / bpm) * 1000);
-      this.setState(
-        {
-          count: 0
-          // Play a click "immediately" (after setState finishes)
-        },
-        this.playClick
-      );
-      tooglePlay();
+      return;
     }
+    // Start a timer with the current BPM
+    this.timer = setInterval(this.playClick, (60 / splits[0].bpm) * 1000);
+    this.setState(
+      {
+        count: 0
+        // Play a click "immediately" (after setState finishes)
+      },
+      this.playClick
+    );
+    tooglePlay();
   };
 
   render() {
@@ -66,7 +69,7 @@ class Player extends React.Component {
 const mapStateToProps = state => {
   return {
     playing: state.metronome.playing,
-    bpm: state.metronome.bpm
+    splits: state.metronome.splits
   };
 };
 
