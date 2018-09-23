@@ -6,7 +6,9 @@ import { tooglePlaying } from "../redux/metronome";
 
 class Player extends React.Component {
   state = {
-    count: 0
+    clickCount: 0,
+    measureCount: 0,
+    splitCount: 0
   };
 
   // Create Audio objects with the files Webpack loaded
@@ -14,20 +16,27 @@ class Player extends React.Component {
   click2 = new Audio(click2);
 
   playClick = () => {
-    const { count } = this.state;
-    const { beatsPerMeasure } = this.props;
+    const { clickCount, measureCount, splitCount } = this.state;
+    const { splits } = this.props;
 
     // The first beat will have a different sound than the others
-    if (count % beatsPerMeasure === 0) {
+    if (clickCount % splits[splitCount].beatsPerMeasure === 0) {
       this.click2.play();
     } else {
       this.click1.play();
     }
 
     // Keep track of which beat we're on
-    this.setState(state => ({
-      count: (state.count + 1) % beatsPerMeasure
-    }));
+    const nextClickCount =
+      (clickCount + 1) % splits[splitCount].beatsPerMeasure;
+    const nextMeasureCount =
+      (nextClickCount === 0 ? measureCount + 1 : measureCount) %
+      splits[splitCount].measures;
+    this.setState({
+      ...this.state,
+      clickCount: nextClickCount,
+      measureCount: nextMeasureCount
+    });
   };
 
   play = () => {
@@ -45,7 +54,7 @@ class Player extends React.Component {
     this.timer = setInterval(this.playClick, (60 / splits[0].bpm) * 1000);
     this.setState(
       {
-        count: 0
+        clickCount: 0
         // Play a click "immediately" (after setState finishes)
       },
       this.playClick
@@ -54,12 +63,12 @@ class Player extends React.Component {
   };
 
   render() {
-    const { count } = this.state;
+    const { clickCount, measureCount, splitCount } = this.state;
     const { playing } = this.props;
 
     return (
       <div>
-        {count}
+        {clickCount}/{measureCount}/{splitCount}
         <button onClick={this.play}>{playing ? "Stop" : "Start"}</button>
       </div>
     );
