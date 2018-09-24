@@ -6,7 +6,7 @@ class AddSplits extends React.Component {
   state = {
     bpm: 120,
     beatsPerMeasure: 4,
-    measures: 8
+    measures: 2
   };
 
   render() {

@@ -2,13 +2,11 @@ import React from "react";
 import click1 from "../click1.wav";
 import click2 from "../click2.wav";
 import { connect } from "react-redux";
-import { tooglePlaying } from "../redux/metronome";
+import { nextMeasure, nextSplit, tooglePlaying } from "../redux/metronome";
 
 class Player extends React.Component {
   state = {
-    clickCount: 0,
-    measureCount: 0,
-    splitCount: 0
+    clickCount: 0
   };
 
   // Create Audio objects with the files Webpack loaded
@@ -16,31 +14,34 @@ class Player extends React.Component {
   click2 = new Audio(click2);
 
   playClick = () => {
-    const { clickCount, measureCount, splitCount } = this.state;
-    const { splits } = this.props;
+    const { clickCount } = this.state;
+    const { splits, splitId, measure } = this.props;
+    const currentSplit = splits[splitId];
 
     // The first beat will have a different sound than the others
-    if (clickCount % splits[splitCount].beatsPerMeasure === 0) {
+    if (clickCount % currentSplit.beatsPerMeasure === 0) {
       this.click2.play();
     } else {
       this.click1.play();
     }
 
+    if (clickCount + 1 === currentSplit.beatsPerMeasure) {
+      this.props.nextMeasure();
+
+      if (measure + 1 === currentSplit.measures) {
+        this.props.nextSplit();
+      }
+    }
+
     // Keep track of which beat we're on
-    const nextClickCount =
-      (clickCount + 1) % splits[splitCount].beatsPerMeasure;
-    const nextMeasureCount =
-      (nextClickCount === 0 ? measureCount + 1 : measureCount) %
-      splits[splitCount].measures;
     this.setState({
       ...this.state,
-      clickCount: nextClickCount,
-      measureCount: nextMeasureCount
+      clickCount: (clickCount + 1) % currentSplit.beatsPerMeasure
     });
   };
 
   play = () => {
-    const { playing, splits, tooglePlay } = this.props;
+    const { playing, splits, splitId, tooglePlay } = this.props;
     if (splits.length === 0) {
       return;
     }
@@ -51,7 +52,7 @@ class Player extends React.Component {
       return;
     }
     // Start a timer with the current BPM
-    this.timer = setInterval(this.playClick, (60 / splits[0].bpm) * 1000);
+    this.timer = setInterval(this.playClick, (60 / splits[splitId].bpm) * 1000);
     this.setState(
       {
         clickCount: 0
@@ -63,12 +64,12 @@ class Player extends React.Component {
   };
 
   render() {
-    const { clickCount, measureCount, splitCount } = this.state;
-    const { playing } = this.props;
+    const { clickCount } = this.state;
+    const { splitId, playing, measure } = this.props;
 
     return (
       <div>
-        {clickCount}/{measureCount}/{splitCount}
+        {clickCount}/{measure}/{splitId}
         <button onClick={this.play}>{playing ? "Stop" : "Start"}</button>
       </div>
     );
@@ -78,13 +79,17 @@ class Player extends React.Component {
 const mapStateToProps = state => {
   return {
     playing: state.metronome.playing,
-    splits: state.metronome.splits
+    splits: state.metronome.splits,
+    splitId: state.metronome.splitId,
+    measure: state.metronome.measure
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    tooglePlay: () => dispatch(tooglePlaying())
+    tooglePlay: () => dispatch(tooglePlaying()),
+    nextSplit: () => dispatch(nextSplit()),
+    nextMeasure: () => dispatch(nextMeasure())
   };
 };
 
