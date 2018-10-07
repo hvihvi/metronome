@@ -4,14 +4,14 @@ import click2 from "../click2.wav";
 import { connect } from "react-redux";
 import { nextMeasure, nextSplit, pause, play, stop } from "../redux/metronome";
 
+// Create Audio objects with the files Webpack loaded
+const tic = new Audio(click1);
+const tac = new Audio(click2);
+
 class Player extends React.Component {
   state = {
     clickCount: 0
   };
-
-  // Create Audio objects with the files Webpack loaded
-  click1 = new Audio(click1);
-  click2 = new Audio(click2);
 
   playClick = () => {
     const { clickCount } = this.state;
@@ -20,9 +20,9 @@ class Player extends React.Component {
 
     // The first beat will have a different sound than the others
     if (clickCount % currentSplit.beatsPerMeasure === 0) {
-      this.click2.play();
+      tac.play();
     } else {
-      this.click1.play();
+      tic.play();
     }
 
     if (clickCount + 1 === currentSplit.beatsPerMeasure) {
