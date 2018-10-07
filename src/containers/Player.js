@@ -8,6 +8,9 @@ import { nextMeasure, nextSplit, pause, play, stop } from "../redux/metronome";
 const tic = new Audio(click1);
 const tac = new Audio(click2);
 
+const playTic = (clickCount, currentSplit) =>
+  clickCount % currentSplit.beatsPerMeasure === 0 ? tac.play() : tic.play();
+
 class Player extends React.Component {
   state = {
     clickCount: 0
@@ -19,11 +22,7 @@ class Player extends React.Component {
     const currentSplit = splits[splitId];
 
     // The first beat will have a different sound than the others
-    if (clickCount % currentSplit.beatsPerMeasure === 0) {
-      tac.play();
-    } else {
-      tic.play();
-    }
+    playTic(clickCount, currentSplit);
 
     if (clickCount + 1 === currentSplit.beatsPerMeasure) {
       this.props.nextMeasure();
