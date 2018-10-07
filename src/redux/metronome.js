@@ -5,10 +5,24 @@ const initialState = {
   measure: 0
 };
 
-const TOOGLE_PLAYING = "TOOGLE_PLAYING";
-export const tooglePlaying = () => {
+const PLAY = "PLAY";
+export const play = () => {
   return {
-    type: TOOGLE_PLAYING
+    type: PLAY
+  };
+};
+
+const PAUSE = "PAUSE";
+export const pause = () => {
+  return {
+    type: PAUSE
+  };
+};
+
+const STOP = "STOP";
+export const stop = () => {
+  return {
+    type: STOP
   };
 };
 
@@ -36,8 +50,17 @@ export const addSplit = split => {
 
 const metronome = (state = initialState, action) => {
   switch (action.type) {
-    case TOOGLE_PLAYING:
-      return { ...state, playing: !state.playing };
+    case PLAY:
+      return { ...state, playing: true };
+    case PAUSE:
+      return { ...state, playing: false };
+    case STOP:
+      return {
+        ...state,
+        playing: false,
+        splitId: initialState.splitId,
+        measure: initialState.measure
+      };
     case ADD_SPLIT:
       return { ...state, splits: state.splits.concat(action.split) };
     case NEXT_MEASURE:

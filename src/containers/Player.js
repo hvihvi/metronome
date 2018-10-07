@@ -2,7 +2,7 @@ import React from "react";
 import click1 from "../click1.wav";
 import click2 from "../click2.wav";
 import { connect } from "react-redux";
-import { nextMeasure, nextSplit, tooglePlaying } from "../redux/metronome";
+import { nextMeasure, nextSplit, pause, play, stop } from "../redux/metronome";
 
 class Player extends React.Component {
   state = {
@@ -40,15 +40,15 @@ class Player extends React.Component {
     });
   };
 
-  play = () => {
-    const { playing, splits, splitId, tooglePlay } = this.props;
+  onPlay = () => {
+    const { playing, splits, splitId, play, pause } = this.props;
     if (splits.length === 0) {
       return;
     }
     if (playing) {
       // Stop the timer
       clearInterval(this.timer);
-      tooglePlay();
+      pause();
       return;
     }
     // Start a timer with the current BPM
@@ -60,17 +60,18 @@ class Player extends React.Component {
       },
       this.playClick
     );
-    tooglePlay();
+    play();
   };
 
   render() {
     const { clickCount } = this.state;
-    const { splitId, playing, measure } = this.props;
+    const { splitId, playing, measure, stop } = this.props;
 
     return (
       <div>
         {clickCount}/{measure}/{splitId}
-        <button onClick={this.play}>{playing ? "Stop" : "Start"}</button>
+        <button onClick={this.onPlay}>{playing ? "Pause" : "Start"}</button>
+        <button onClick={stop}>{"Stop"}</button>
       </div>
     );
   }
@@ -87,7 +88,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    tooglePlay: () => dispatch(tooglePlaying()),
+    play: () => dispatch(play()),
+    pause: () => dispatch(pause()),
+    stop: () => dispatch(stop()),
     nextSplit: () => dispatch(nextSplit()),
     nextMeasure: () => dispatch(nextMeasure())
   };
