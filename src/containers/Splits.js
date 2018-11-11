@@ -1,7 +1,7 @@
 import React from "react";
 import { Split } from "../components/Split";
 import { connect } from "react-redux";
-import AddSplits from "./AddSplit";
+import AddSplits from "./AddSplits";
 
 const Splits = ({ splits }) => (
   <div>
