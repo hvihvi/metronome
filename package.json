@@ -1,10 +1,11 @@
 {
   "name": "metronome",
+  "homepage": "https://hvihvi.github.io/metronome",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "react": "^16.7.0-alpha",
+    "react-dom": "^16.7.0-alpha",
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.5",
     "redux": "^4.0.0"
@@ -14,9 +15,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prettier": "prettier --write '{./src/**/*.js,./src/**/*.json}'"
+    "prettier": "prettier --write '{./src/**/*.js,./src/**/*.json}'",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "prettier": "^1.14.3"
   }
 }
