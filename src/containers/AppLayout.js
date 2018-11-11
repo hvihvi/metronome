@@ -1,11 +1,11 @@
 import React from "react";
-import Player from "./Player";
 import Splits from "./Splits";
+import PlayerV2 from "./PlayerV2";
 
 const AppLayout = () => (
   <div>
     <Splits />
-    <Player beatsPerMeasure={4} />
+    <PlayerV2 />
   </div>
 );
 
